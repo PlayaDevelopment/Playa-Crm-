@@ -1,0 +1,75 @@
+<%- include('../layout-top') %>
+<div class="page-head">
+  <div>
+    <h1><%= deal ? 'Edit deal' : 'New deal' %></h1>
+    <p>Link to an account and set stage / scope.</p>
+  </div>
+  <a class="btn" href="/pipeline">Cancel</a>
+</div>
+
+<div class="card card-b pad">
+  <form class="form wide" method="post" action="<%= deal ? '/pipeline/' + deal.id + '?_method=PUT' : '/pipeline' %>">
+    <div class="form-row cols-2">
+      <div>
+        <label>Account *</label>
+        <select name="account_id" required>
+          <option value="">Select…</option>
+          <% accounts.forEach(a => { %>
+            <option value="<%= a.id %>" <%= String(accountId) === String(a.id) ? 'selected' : '' %>><%= a.company %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div>
+        <label>Stage</label>
+        <select name="stage">
+          <% STAGES.forEach(s => { %>
+            <option value="<%= s %>" <%= deal && deal.stage === s ? 'selected' : (!deal && s === 'new' ? 'selected' : '') %>><%= label(s) %></option>
+          <% }) %>
+        </select>
+      </div>
+    </div>
+    <div class="form-row cols-3">
+      <div>
+        <label>Scope</label>
+        <select name="scope_type">
+          <% SCOPE_TYPES.forEach(s => { %>
+            <option value="<%= s %>" <%= deal && deal.scope_type === s ? 'selected' : '' %>><%= s %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div>
+        <label>Job city</label>
+        <input name="job_city" value="<%= deal ? deal.job_city || '' : '' %>" placeholder="Stuart, Boca, Jupiter…" />
+      </div>
+      <div>
+        <label>Owner</label>
+        <input name="owner" value="<%= deal ? deal.owner || 'Mike' : 'Mike' %>" />
+      </div>
+    </div>
+    <div class="form-row cols-2">
+      <div>
+        <label>Estimated value</label>
+        <input type="number" step="1" name="estimated_value" value="<%= deal ? deal.estimated_value : 0 %>" />
+      </div>
+      <div>
+        <label>Probability %</label>
+        <input type="number" min="0" max="100" name="probability" value="<%= deal ? deal.probability : 20 %>" />
+      </div>
+    </div>
+    <div>
+      <label>Linked bid URL</label>
+      <input name="linked_bid_url" value="<%= deal ? deal.linked_bid_url || '' : '' %>" />
+    </div>
+    <div>
+      <label>Next step</label>
+      <input name="next_step" value="<%= deal ? deal.next_step || '' : '' %>" />
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" type="submit"><%= deal ? 'Save deal' : 'Create deal' %></button>
+      <% if (deal) { %>
+        <button class="btn btn-danger" type="submit" formaction="/pipeline/<%= deal.id %>?_method=DELETE" formmethod="post" onclick="return confirm('Delete this deal?')">Delete</button>
+      <% } %>
+    </div>
+  </form>
+</div>
+<%- include('../layout-bottom') %>

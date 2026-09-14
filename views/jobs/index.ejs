@@ -1,0 +1,43 @@
+<%- include('../layout-top') %>
+<div class="page-head">
+  <div>
+    <h1>Jobs</h1>
+    <p>Won work — light tracking after pipeline win.</p>
+  </div>
+  <a class="btn btn-primary" href="/jobs/new">New job</a>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Account</th>
+          <th>City</th>
+          <th>Scope</th>
+          <th>Value</th>
+          <th>Status</th>
+          <th>Start</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (!jobs.length) { %><tr><td colspan="8" class="empty">No jobs yet — mark a deal as won to auto-create one</td></tr><% } %>
+        <% jobs.forEach(j => { %>
+          <tr>
+            <td><a href="/jobs/<%= j.id %>/edit"><strong><%= j.title %></strong></a></td>
+            <td><a href="/accounts/<%= j.account_id %>"><%= j.company %></a></td>
+            <td><%= j.job_city || '—' %></td>
+            <td><span class="badge badge-<%= j.scope_type %>"><%= j.scope_type %></span></td>
+            <td><%= fmtMoney(j.contract_value) %></td>
+            <td><span class="badge badge-<%= j.status %>"><%= j.status %></span></td>
+            <td><%= j.start_date || '—' %></td>
+            <td><a class="btn btn-sm" href="/jobs/<%= j.id %>/edit">Edit</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<%- include('../layout-bottom') %>

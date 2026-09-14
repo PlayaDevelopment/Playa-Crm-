@@ -1,0 +1,46 @@
+<%- include('../layout-top') %>
+<div class="page-head">
+  <div>
+    <h1>Bids</h1>
+    <p>Trim / drywall estimates — flag needs_mike_approval before send.</p>
+  </div>
+  <a class="btn btn-primary" href="/bids/new">New bid</a>
+</div>
+
+<div class="filters">
+  <a href="/bids" class="<%= !filterStatus ? 'active' : '' %>">All</a>
+  <% BID_STATUSES.forEach(s => { %>
+    <a href="/bids?status=<%= s %>" class="<%= filterStatus === s ? 'active' : '' %>"><%= label(s) %></a>
+  <% }) %>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Account</th>
+          <th>Scope</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (!bids.length) { %><tr><td colspan="6" class="empty">No bids</td></tr><% } %>
+        <% bids.forEach(b => { %>
+          <tr>
+            <td><a href="/bids/<%= b.id %>/edit"><strong><%= b.title %></strong></a></td>
+            <td><a href="/accounts/<%= b.account_id %>"><%= b.company %></a></td>
+            <td><span class="badge badge-<%= b.scope_type %>"><%= b.scope_type %></span></td>
+            <td><%= fmtMoney(b.amount) %></td>
+            <td><span class="badge badge-<%= b.status %>"><%= label(b.status) %></span></td>
+            <td><a class="btn btn-sm" href="/bids/<%= b.id %>/edit">Edit</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<%- include('../layout-bottom') %>

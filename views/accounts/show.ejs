@@ -1,0 +1,92 @@
+<%- include('../layout-top') %>
+<div class="page-head">
+  <div>
+    <h1><%= account.company %></h1>
+    <p>
+      <span class="badge badge-<%= account.status %>"><%= label(account.status) %></span>
+      · <%= account.source %>
+      <% if (account.county) { %> · <%= account.county %> County<% } %>
+    </p>
+  </div>
+  <div class="actions">
+    <a class="btn" href="/touches/new?account_id=<%= account.id %>">Log touch</a>
+    <a class="btn" href="/pipeline/new?account_id=<%= account.id %>">New deal</a>
+    <a class="btn" href="/bids/new?account_id=<%= account.id %>">New bid</a>
+    <a class="btn" href="/accounts/<%= account.id %>/edit">Edit</a>
+    <form class="inline-form" method="post" action="/accounts/<%= account.id %>?_method=DELETE" onsubmit="return confirm('Delete this account and related records?')">
+      <button class="btn btn-danger" type="submit">Delete</button>
+    </form>
+  </div>
+</div>
+
+<div class="detail-grid">
+  <div class="card card-b pad">
+    <div class="kv">
+      <div><span class="k">Contact</span><span><%= account.primary_contact || '—' %></span></div>
+      <div><span class="k">Email</span><span><% if (account.email) { %><a href="mailto:<%= account.email %>"><%= account.email %></a><% } else { %>—<% } %></span></div>
+      <div><span class="k">Phone</span><span><%= account.phone || '—' %></span></div>
+      <div><span class="k">Website</span><span><% if (account.website) { %><a href="<%= account.website %>" target="_blank" rel="noopener"><%= account.website %></a><% } else { %>—<% } %></span></div>
+      <div><span class="k">Last touch</span><span><%= account.last_touch_date || '—' %></span></div>
+      <div><span class="k">Next action</span><span><%= account.next_action || '—' %><% if (account.next_action_due) { %> <span class="meta">(due <%= account.next_action_due %>)</span><% } %></span></div>
+      <div><span class="k">Notes</span><span><%= account.notes || '—' %></span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-h"><h2>Deals</h2></div>
+    <ul class="list">
+      <% if (!deals.length) { %><li class="empty">No deals</li><% } %>
+      <% deals.forEach(d => { %>
+        <li>
+          <div>
+            <div class="title"><a href="/pipeline/<%= d.id %>/edit"><%= d.job_city || 'Deal' %> · <%= d.scope_type %></a></div>
+            <div class="meta"><%= fmtMoney(d.estimated_value) %> · <%= d.probability %>%</div>
+          </div>
+          <span class="badge badge-<%= d.stage %>"><%= label(d.stage) %></span>
+        </li>
+      <% }) %>
+    </ul>
+  </div>
+</div>
+
+<div class="grid-2" style="margin-top:1rem">
+  <section class="card">
+    <div class="card-h"><h2>Touches</h2><a href="/touches?account_id=<%= account.id %>">View all</a></div>
+    <ul class="list">
+      <% if (!touches.length) { %><li class="empty">No touches logged</li><% } %>
+      <% touches.slice(0, 8).forEach(t => { %>
+        <li>
+          <div>
+            <div class="title"><%= t.summary %></div>
+            <div class="meta"><%= t.date %> · <%= t.channel %> · <%= t.direction %></div>
+          </div>
+          <a class="btn btn-sm" href="/touches/<%= t.id %>/edit">Edit</a>
+        </li>
+      <% }) %>
+    </ul>
+  </section>
+  <section class="card">
+    <div class="card-h"><h2>Bids &amp; jobs</h2></div>
+    <ul class="list">
+      <% bids.forEach(b => { %>
+        <li>
+          <div>
+            <div class="title"><a href="/bids/<%= b.id %>/edit"><%= b.title %></a></div>
+            <div class="meta"><%= fmtMoney(b.amount) %> · <span class="badge badge-<%= b.scope_type %>"><%= b.scope_type %></span></div>
+          </div>
+          <span class="badge badge-<%= b.status %>"><%= label(b.status) %></span>
+        </li>
+      <% }) %>
+      <% jobs.forEach(j => { %>
+        <li>
+          <div>
+            <div class="title"><a href="/jobs/<%= j.id %>/edit"><%= j.title %></a></div>
+            <div class="meta">Job · <%= fmtMoney(j.contract_value) %></div>
+          </div>
+          <span class="badge badge-<%= j.status %>"><%= j.status %></span>
+        </li>
+      <% }) %>
+      <% if (!bids.length && !jobs.length) { %><li class="empty">No bids or jobs</li><% } %>
+    </ul>
+  </section>
+</div>
+<%- include('../layout-bottom') %>

@@ -1,0 +1,81 @@
+<%- include('../layout-top') %>
+<div class="page-head">
+  <div>
+    <h1><%= account ? 'Edit account' : 'New account' %></h1>
+    <p><%= account ? account.company : 'Add a builder or GC' %></p>
+  </div>
+  <a class="btn" href="<%= account ? '/accounts/' + account.id : '/accounts' %>">Cancel</a>
+</div>
+
+<div class="card card-b pad">
+  <form class="form wide" method="post" action="<%= account ? '/accounts/' + account.id + '?_method=PUT' : '/accounts' %>">
+    <div class="form-row cols-2">
+      <div>
+        <label>Company *</label>
+        <input name="company" required value="<%= account ? account.company : '' %>" />
+      </div>
+      <div>
+        <label>Primary contact</label>
+        <input name="primary_contact" value="<%= account ? account.primary_contact || '' : '' %>" />
+      </div>
+    </div>
+    <div class="form-row cols-2">
+      <div>
+        <label>Email</label>
+        <input type="email" name="email" value="<%= account ? account.email || '' : '' %>" />
+      </div>
+      <div>
+        <label>Phone</label>
+        <input name="phone" value="<%= account ? account.phone || '' : '' %>" />
+      </div>
+    </div>
+    <div class="form-row cols-3">
+      <div>
+        <label>County</label>
+        <input name="county" placeholder="Martin, Palm Beach, Broward…" value="<%= account ? account.county || '' : '' %>" />
+      </div>
+      <div>
+        <label>Source</label>
+        <select name="source">
+          <% SOURCES.forEach(s => { %>
+            <option value="<%= s %>" <%= account && account.source === s ? 'selected' : '' %>><%= s %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div>
+        <label>Status</label>
+        <select name="status">
+          <% STATUSES.forEach(s => { %>
+            <option value="<%= s %>" <%= account && account.status === s ? 'selected' : (!account && s === 'cold' ? 'selected' : '') %>><%= label(s) %></option>
+          <% }) %>
+        </select>
+      </div>
+    </div>
+    <div>
+      <label>Website</label>
+      <input name="website" value="<%= account ? account.website || '' : '' %>" />
+    </div>
+    <div class="form-row cols-2">
+      <div>
+        <label>Last touch date</label>
+        <input type="date" name="last_touch_date" value="<%= account ? account.last_touch_date || '' : '' %>" />
+      </div>
+      <div>
+        <label>Next action due</label>
+        <input type="date" name="next_action_due" value="<%= account ? account.next_action_due || '' : '' %>" />
+      </div>
+    </div>
+    <div>
+      <label>Next action</label>
+      <input name="next_action" value="<%= account ? account.next_action || '' : '' %>" />
+    </div>
+    <div>
+      <label>Notes</label>
+      <textarea name="notes"><%= account ? account.notes || '' : '' %></textarea>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" type="submit"><%= account ? 'Save' : 'Create account' %></button>
+    </div>
+  </form>
+</div>
+<%- include('../layout-bottom') %>

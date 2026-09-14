@@ -1,0 +1,77 @@
+<%- include('layout-top') %>
+<div class="page-head">
+  <div>
+    <h1>Today</h1>
+    <p>Follow-ups, open replies, and bids waiting on Mike.</p>
+  </div>
+  <div class="actions">
+    <a class="btn" href="/touches/new">Log touch</a>
+    <a class="btn btn-primary" href="/accounts/new">New account</a>
+  </div>
+</div>
+
+<div class="flash-note">Service area <strong><%= SERVICE_AREA %></strong> · Drywall is bid separately from trim · Proposals default to Mike approval when flagged.</div>
+
+<div class="stats">
+  <div class="stat"><div class="label">Accounts</div><div class="value"><%= stats.accounts %></div></div>
+  <div class="stat"><div class="label">Open deals</div><div class="value"><%= stats.openDeals %></div></div>
+  <div class="stat"><div class="label">Pipeline</div><div class="value"><%= fmtMoney(stats.pipelineValue) %></div></div>
+  <div class="stat"><div class="label">Active jobs</div><div class="value"><%= stats.activeJobs %></div></div>
+</div>
+
+<div class="grid-3">
+  <section class="card">
+    <div class="card-h"><h2>Due follow-ups</h2><a href="/accounts">All</a></div>
+    <ul class="list">
+      <% if (!dueFollowups.length) { %><li class="empty">Nothing due</li><% } %>
+      <% dueFollowups.slice(0, 8).forEach(a => { %>
+        <li>
+          <div>
+            <div class="title"><a href="/accounts/<%= a.id %>"><%= a.company %></a></div>
+            <div class="meta"><%= a.next_action || '—' %></div>
+          </div>
+          <div class="meta" style="text-align:right">
+            <% if (a.next_action_due < today) { %><span class="overdue"><%= a.next_action_due %></span>
+            <% } else if (a.next_action_due === today) { %><span class="due-today">Today</span>
+            <% } else { %><%= a.next_action_due %><% } %>
+          </div>
+        </li>
+      <% }) %>
+    </ul>
+  </section>
+
+  <section class="card">
+    <div class="card-h"><h2>Open replies</h2><a href="/touches">All</a></div>
+    <ul class="list">
+      <% if (!openReplies.length) { %><li class="empty">No inbound touches</li><% } %>
+      <% openReplies.slice(0, 8).forEach(t => { %>
+        <li>
+          <div>
+            <div class="title"><a href="/accounts/<%= t.account_id %>"><%= t.company %></a></div>
+            <div class="meta"><%= t.summary %></div>
+          </div>
+          <div class="meta" style="text-align:right">
+            <span class="badge"><%= t.channel %></span><br/><%= t.date %>
+          </div>
+        </li>
+      <% }) %>
+    </ul>
+  </section>
+
+  <section class="card">
+    <div class="card-h"><h2>Needs Mike approval</h2><a href="/bids?status=needs_mike_approval">Bids</a></div>
+    <ul class="list">
+      <% if (!mikeBids.length) { %><li class="empty">No bids waiting</li><% } %>
+      <% mikeBids.forEach(b => { %>
+        <li>
+          <div>
+            <div class="title"><a href="/bids/<%= b.id %>/edit"><%= b.title %></a></div>
+            <div class="meta"><%= b.company %> · <span class="badge badge-<%= b.scope_type %>"><%= b.scope_type %></span></div>
+          </div>
+          <div class="meta" style="text-align:right;font-weight:600"><%= fmtMoney(b.amount) %></div>
+        </li>
+      <% }) %>
+    </ul>
+  </section>
+</div>
+<%- include('layout-bottom') %>

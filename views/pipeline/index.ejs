@@ -1,0 +1,26 @@
+<%- include('../layout-top') %>
+<div class="page-head">
+  <div>
+    <h1>Pipeline</h1>
+    <p>Deals by stage — new → won / lost / nurture.</p>
+  </div>
+  <a class="btn btn-primary" href="/pipeline/new">New deal</a>
+</div>
+
+<div class="pipeline">
+  <% STAGES.forEach(stage => { %>
+    <div class="stage-col">
+      <h3><span><%= label(stage) %></span><span><%= (byStage[stage] || []).length %></span></h3>
+      <% (byStage[stage] || []).forEach(d => { %>
+        <div class="deal-card">
+          <div class="company"><a href="/pipeline/<%= d.id %>/edit"><%= d.company %></a></div>
+          <div class="sub"><%= d.job_city || '—' %> · <span class="badge badge-<%= d.scope_type %>"><%= d.scope_type %></span></div>
+          <div class="amt"><%= fmtMoney(d.estimated_value) %> <span class="meta">· <%= d.probability %>%</span></div>
+          <% if (d.next_step) { %><div class="sub"><%= d.next_step %></div><% } %>
+        </div>
+      <% }) %>
+      <% if (!(byStage[stage] || []).length) { %><div class="empty" style="padding:.5rem">—</div><% } %>
+    </div>
+  <% }) %>
+</div>
+<%- include('../layout-bottom') %>

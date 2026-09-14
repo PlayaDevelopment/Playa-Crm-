@@ -1,0 +1,48 @@
+<%- include('../layout-top') %>
+<div class="page-head">
+  <div>
+    <h1>Touches</h1>
+    <p>Outreach history — email, call, Instagram.</p>
+  </div>
+  <a class="btn btn-primary" href="/touches/new<%= filterAccount ? '?account_id=' + filterAccount : '' %>">Log touch</a>
+</div>
+
+<div class="filters">
+  <a href="/touches" class="<%= !filterAccount ? 'active' : '' %>">All accounts</a>
+  <% accounts.forEach(a => { %>
+    <a href="/touches?account_id=<%= a.id %>" class="<%= String(filterAccount) === String(a.id) ? 'active' : '' %>"><%= a.company %></a>
+  <% }) %>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Account</th>
+          <th>Channel</th>
+          <th>Dir</th>
+          <th>Summary</th>
+          <th>Next</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (!touches.length) { %><tr><td colspan="7" class="empty">No touches</td></tr><% } %>
+        <% touches.forEach(t => { %>
+          <tr>
+            <td><%= t.date %></td>
+            <td><a href="/accounts/<%= t.account_id %>"><%= t.company %></a></td>
+            <td><span class="badge"><%= t.channel %></span></td>
+            <td><%= t.direction %></td>
+            <td><%= t.summary %></td>
+            <td><%= t.next_action || '—' %></td>
+            <td><a class="btn btn-sm" href="/touches/<%= t.id %>/edit">Edit</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<%- include('../layout-bottom') %>

@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: playa-crm
+    runtime: node
+    plan: starter
+    buildCommand: npm ci --omit=dev
+    startCommand: node server.js
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CRM_USER
+        value: playa
+      - key: CRM_PASSWORD
+        sync: false
+      - key: PORT
+        value: "3847"
+    disk:
+      name: playa-crm-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1

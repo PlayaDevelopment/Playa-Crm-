@@ -1,0 +1,69 @@
+<%- include('../layout-top') %>
+<div class="page-head">
+  <div>
+    <h1><%= touch ? 'Edit touch' : 'Log touch' %></h1>
+    <p>Record outreach or inbound reply.</p>
+  </div>
+  <a class="btn" href="/touches">Cancel</a>
+</div>
+
+<div class="card card-b pad">
+  <form class="form wide" method="post" action="<%= touch ? '/touches/' + touch.id + '?_method=PUT' : '/touches' %>">
+    <div class="form-row cols-2">
+      <div>
+        <label>Account *</label>
+        <select name="account_id" required>
+          <option value="">Select…</option>
+          <% accounts.forEach(a => { %>
+            <option value="<%= a.id %>" <%= String(accountId) === String(a.id) ? 'selected' : '' %>><%= a.company %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div>
+        <label>Date</label>
+        <input type="date" name="date" value="<%= touch ? touch.date : today() %>" />
+      </div>
+    </div>
+    <div class="form-row cols-2">
+      <div>
+        <label>Channel</label>
+        <select name="channel">
+          <% CHANNELS.forEach(c => { %>
+            <option value="<%= c %>" <%= touch && touch.channel === c ? 'selected' : '' %>><%= c %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div>
+        <label>Direction</label>
+        <select name="direction">
+          <% DIRECTIONS.forEach(d => { %>
+            <option value="<%= d %>" <%= touch && touch.direction === d ? 'selected' : (!touch && d === 'out' ? 'selected' : '') %>><%= d %></option>
+          <% }) %>
+        </select>
+      </div>
+    </div>
+    <div>
+      <label>Summary</label>
+      <textarea name="summary" required><%= touch ? touch.summary || '' : '' %></textarea>
+    </div>
+    <div class="form-row cols-2">
+      <div>
+        <label>Next action</label>
+        <input name="next_action" value="<%= touch ? touch.next_action || '' : '' %>" />
+      </div>
+      <% if (!touch) { %>
+      <div>
+        <label>Next action due (updates account)</label>
+        <input type="date" name="next_action_due" />
+      </div>
+      <% } %>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" type="submit"><%= touch ? 'Save' : 'Log touch' %></button>
+      <% if (touch) { %>
+        <button class="btn btn-danger" type="submit" formaction="/touches/<%= touch.id %>?_method=DELETE" formmethod="post" onclick="return confirm('Delete touch?')">Delete</button>
+      <% } %>
+    </div>
+  </form>
+</div>
+<%- include('../layout-bottom') %>

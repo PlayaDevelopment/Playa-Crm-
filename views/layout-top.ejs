@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= title %> · Playa CRM</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <a class="brand" href="/">Playa <span>CRM</span>
+        <small>Luxury trim · South Florida</small>
+      </a>
+      <nav class="nav">
+        <a href="/" class="<%= typeof title !== 'undefined' && title === 'Today' ? 'active' : '' %>">Today</a>
+        <a href="/accounts" class="<%= title && String(title).includes('Account') ? 'active' : '' %>">Accounts</a>
+        <a href="/pipeline" class="<%= title && (title === 'Pipeline' || String(title).includes('Deal')) ? 'active' : '' %>">Pipeline</a>
+        <a href="/touches" class="<%= title && String(title).includes('Touch') ? 'active' : '' %>">Touches</a>
+        <a href="/bids" class="<%= title && String(title).includes('Bid') ? 'active' : '' %>">Bids</a>
+        <a href="/jobs" class="<%= title && String(title).includes('Job') ? 'active' : '' %>">Jobs</a>
+      </nav>
+      <span class="area-tag"><%= SERVICE_AREA %></span>
+    </div>
+  </header>
+  <main>

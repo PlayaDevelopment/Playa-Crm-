@@ -1,0 +1,53 @@
+<%- include('../layout-top') %>
+<div class="page-head">
+  <div>
+    <h1>Accounts</h1>
+    <p>Builders &amp; GCs — first touch → reply → bid → job.</p>
+  </div>
+  <a class="btn btn-primary" href="/accounts/new">New account</a>
+</div>
+
+<div class="filters">
+  <a href="/accounts" class="<%= !filterStatus ? 'active' : '' %>">All</a>
+  <% STATUSES.forEach(s => { %>
+    <a href="/accounts?status=<%= s %>" class="<%= filterStatus === s ? 'active' : '' %>"><%= label(s) %></a>
+  <% }) %>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Contact</th>
+          <th>County</th>
+          <th>Status</th>
+          <th>Source</th>
+          <th>Next action</th>
+          <th>Due</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (!accounts.length) { %>
+          <tr><td colspan="7" class="empty">No accounts yet</td></tr>
+        <% } %>
+        <% accounts.forEach(a => { %>
+          <tr>
+            <td><a href="/accounts/<%= a.id %>"><strong><%= a.company %></strong></a></td>
+            <td><%= a.primary_contact || '—' %><div class="meta"><%= a.email || '' %></div></td>
+            <td><%= a.county || '—' %></td>
+            <td><span class="badge badge-<%= a.status %>"><%= label(a.status) %></span></td>
+            <td><%= a.source %></td>
+            <td><%= a.next_action || '—' %></td>
+            <td>
+              <% if (a.next_action_due && a.next_action_due < today()) { %><span class="overdue"><%= a.next_action_due %></span>
+              <% } else { %><%= a.next_action_due || '—' %><% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<%- include('../layout-bottom') %>

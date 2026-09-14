@@ -1,0 +1,78 @@
+<%- include('../layout-top') %>
+<div class="page-head">
+  <div>
+    <h1><%= bid ? 'Edit bid' : 'New bid' %></h1>
+    <p>Keep drywall separate from trim unless scope is both.</p>
+  </div>
+  <a class="btn" href="/bids">Cancel</a>
+</div>
+
+<div class="card card-b pad">
+  <form class="form wide" method="post" action="<%= bid ? '/bids/' + bid.id + '?_method=PUT' : '/bids' %>">
+    <div class="form-row cols-2">
+      <div>
+        <label>Account *</label>
+        <select name="account_id" required>
+          <option value="">Select…</option>
+          <% accounts.forEach(a => { %>
+            <option value="<%= a.id %>" <%= String(accountId) === String(a.id) ? 'selected' : '' %>><%= a.company %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div>
+        <label>Linked deal (optional)</label>
+        <select name="deal_id">
+          <option value="">None</option>
+          <% deals.forEach(d => { %>
+            <option value="<%= d.id %>" <%= String(dealId) === String(d.id) ? 'selected' : '' %>><%= d.company %> — <%= d.job_city || d.stage %> (#<%= d.id %>)</option>
+          <% }) %>
+        </select>
+      </div>
+    </div>
+    <div>
+      <label>Title *</label>
+      <input name="title" required value="<%= bid ? bid.title : '' %>" />
+    </div>
+    <div class="form-row cols-3">
+      <div>
+        <label>Scope</label>
+        <select name="scope_type">
+          <% SCOPE_TYPES.forEach(s => { %>
+            <option value="<%= s %>" <%= bid && bid.scope_type === s ? 'selected' : '' %>><%= s %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div>
+        <label>Amount</label>
+        <input type="number" step="1" name="amount" value="<%= bid ? bid.amount : 0 %>" />
+      </div>
+      <div>
+        <label>Status</label>
+        <select name="status">
+          <% BID_STATUSES.forEach(s => { %>
+            <option value="<%= s %>" <%= bid && bid.status === s ? 'selected' : (!bid && s === 'draft' ? 'selected' : '') %>><%= label(s) %></option>
+          <% }) %>
+        </select>
+      </div>
+    </div>
+    <div>
+      <label>File URL</label>
+      <input name="file_url" value="<%= bid ? bid.file_url || '' : '' %>" placeholder="https://…" />
+    </div>
+    <div>
+      <label>Notes</label>
+      <textarea name="notes"><%= bid ? bid.notes || '' : '' %></textarea>
+    </div>
+    <label class="check">
+      <input type="checkbox" name="flag_mike" value="1" <%= bid && bid.status === 'needs_mike_approval' ? 'checked' : '' %> />
+      Flag for Mike approval (sets status to needs_mike_approval)
+    </label>
+    <div class="actions">
+      <button class="btn btn-primary" type="submit"><%= bid ? 'Save bid' : 'Create bid' %></button>
+      <% if (bid) { %>
+        <button class="btn btn-danger" type="submit" formaction="/bids/<%= bid.id %>?_method=DELETE" formmethod="post" onclick="return confirm('Delete bid?')">Delete</button>
+      <% } %>
+    </div>
+  </form>
+</div>
+<%- include('../layout-bottom') %>
