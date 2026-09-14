@@ -1,6 +1,7 @@
 #!/bin/sh
 set -e
 mkdir -p /app/data
+chmod 777 /app/data 2>/dev/null || true
 if [ ! -f /app/data/playa.db ]; then
   if [ -f /app/seed/playa.db ]; then
     cp /app/seed/playa.db /app/data/playa.db
